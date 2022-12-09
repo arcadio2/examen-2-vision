@@ -83,9 +83,9 @@ class Kmeans2D:
                     puntos.append( (i,j) )
         return x,y,puntos 
     
-    def k_means_2d(imagen,K=2):
+    def k_means_2d(imagen,K=2,seed=0):
         rows,cols = imagen.shape
-
+        random.seed(seed)
         x,y,puntos = Kmeans2D.obtener_blancos(imagen)
         #print(puntos)
         k_points = Kmeans2D.k_aleatorios(K,puntos)

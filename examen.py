@@ -53,10 +53,11 @@ def separar_objetos():
 
     ArcadioCv.visualizar_imagen(imagen)
     #realizamos el kmeans a las coordenadas
-    imagenes = Kmeans2D.k_means_2d(imagen,4) #separamos los 4 jitomates
+    imagenes = Kmeans2D.k_means_2d(imagen,4,seed=1) #separamos los 4 jitomates
     index = 0
     for imagen in imagenes: 
         cv2.imwrite(f'images/jitomates/jitomate_{str(index+1)}.png',imagen)
+        ArcadioCv.visualizar_imagen(imagen,f'Jitomate {str(index+1)}')
         index+=1
 
 
@@ -64,7 +65,7 @@ def separar_objetos():
 
 if __name__ == "__main__":
     #segmentamos
-    segmentadas = segementar_imagen_por_color()
+    #segmentadas = segementar_imagen_por_color()
     #separamos los objttos de la imagen
     separar_objetos()
 
