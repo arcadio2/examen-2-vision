@@ -153,6 +153,7 @@ def encontrar_puntas(imagen):
     imagen_nueva[minimo_columnas,:] = 127
     imagen_nueva[maximo_columnas,:] = 127
     ArcadioCv.visualizar_imagen(imagen_nueva)
+    cv2.imwrite("images/separaciones/jit_lineas.png",imagen_nueva)
     return minimo_filas,maximo_filas,minimo_columnas,maximo_columnas
     
 """
