@@ -72,3 +72,42 @@ class Analisis2D:
         plt.scatter(a2,b2,s=30,c="red")
 
         plt.show()
+    
+    def distancia_2_puntos(l1,l2,l3): 
+        a1,b1,c1 = l1
+        a2,b2,c2 = l2
+        a3,b3,c3 = l3
+
+        print(f'Linea 1: {str(a1)}x + {str(b1)}y +{str(c1)} ')
+        print(f'Linea 2: {str(a2)}x + {str(b2)}y +{str(c2)} ')
+        print(f'Linea 3: {str(a3)}x + {str(b3)}y +{str(c3)} ')
+
+        l3 = (a3,b3,1)
+
+        m1 = Analisis2D.producto_cruz(l1,l3)
+        m2 = Analisis2D.producto_cruz(l2,l3)
+
+        x1,y1,z1 = m1
+        x2,y2,z2 = m2
+
+        """ print("PUNTO 1 (",x1,y1,z1,")")
+        print("PUNTO 2 (",x2,y2,z2,")") """
+
+        distancia = ( (x2-x1)**2 + (y2-y1)**2 )**0.5
+        
+        x_line_1,y_line_1 = Analisis2D.puntos_lineas(a1,b1,1)
+        x_line_2,y_line_2 = Analisis2D.puntos_lineas(a2,b2,1)
+        x_line_3,y_line_3 = Analisis2D.puntos_lineas(a3,b3,1)
+
+        plt.plot(x_line_1,y_line_1)
+        plt.plot(x_line_2,y_line_2)
+        plt.plot(x_line_3,y_line_3)
+
+        plt.scatter(x1,y1,s=30,c="red")
+        plt.scatter(x2,y2,s=30,c="red")
+        plt.show()
+        print("-----------------------------------------------")
+        print("PUNTO 1",m1)
+        print("PUNTO 2",m2)
+        print("La distancia es: ",distancia)
+        print("-----------------------------------------------")
