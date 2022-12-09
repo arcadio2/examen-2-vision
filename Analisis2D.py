@@ -24,7 +24,7 @@ class Analisis2D:
         y = (-c-a*x)/b 
         return (list(x),list(y))
 
-    def interseccion_lineas(l1,l2,imagen):
+    def interseccion_lineas(l1,l2):
         a1,b1,c1 = l1
         a2,b2,c2 = l2
       
@@ -32,37 +32,30 @@ class Analisis2D:
         print(f'Linea 2: {str(a2)}x + {str(b2)}y +{str(c2)} ')
 
         x,y,z = Analisis2D.producto_cruz(l1,l2)
-        print(x,y,z)
+        #print(x,y,z)
         #ax+by+z=0, y = -z/
         
-        x1,y1 = Analisis2D.puntos_lineas(a1,b1,1)
+        """  x1,y1 = Analisis2D.puntos_lineas(a1,b1,1)
         x2,y2 = Analisis2D.puntos_lineas(a2,b2,1)
         plt.title("Intersección de dos rectas")
         plt.plot(x1,y1)
         plt.plot(x2,y2)
-        plt.scatter(x,y,s=30,c="red")
+        plt.scatter(x,y,s=30,c="red") """
+        
 
         plt.show()
+        return (x,y,z)
     
-    def linea_entre_2_puntos(m1,m2,imagen):
+    def linea_entre_2_puntos(m1,m2):
         a1,b1,c1 = m1
         a2,b2,c2 = m2
 
-        print("Seleccione las cooordenadas del punto 1")
-        a1 = int(input("Ingrese a1: "))
-        b1 = int(input("Ingrese b1: "))
-        c1 = 1
-
-        print("Seleccione las cooordenadas del punto 2")
-        a2 = int(input("Ingrese a2: "))
-        b2 = int(input("Ingrese b2: "))
-        c2 = 1
 
         m1 = (a1,b1,1)
         m2 = (a2,b2,1)
         x,y,z = Analisis2D.producto_cruz(m1,m2)
-        x1,y1 = Analisis2D.puntos_lineas(x,y,1,a1,a2+1,1)
-        print(x1,y1)
+        x1,y1 = Analisis2D.puntos_lineas(x,y,1,a1+1,a2,1)
+        #print(x1,y1)
         print("PUNTO 1 (",a1,b1,1,")")
         print("PUNTO 2 (",a2,b2,1,")")
 
@@ -72,6 +65,7 @@ class Analisis2D:
         plt.scatter(a2,b2,s=30,c="red")
 
         plt.show()
+        return (x1,y1)
     
     def distancia_2_puntos(l1,l2,l3): 
         a1,b1,c1 = l1

@@ -1,6 +1,7 @@
 from ArcadioCv import * 
 from Kmeans import * 
 from Kmeans2D import * 
+from Analisis2D import * 
 import cv2
 
 
@@ -26,9 +27,9 @@ def crear_imagenes(coordenadas,imagen):
     imagenes_log = []
     for imagen in imagenes:
         #grises = ArcadioCv.rgb_to_grises(imagen)
-        imagen_cruces, imagen_delta,imagen_final,imagen_log = ArcadioCv.filtro_log(imagen,5,1)
-        ArcadioCv.visualizar_imagen(imagen_log)
-        imagenes_log.append(imagen_log)
+        imagen_cruces, imagen_delta,imagen_final,imagen_log = ArcadioCv.filtro_log(imagen,7,1)
+        ArcadioCv.visualizar_imagen(imagen_final)
+        imagenes_log.append(imagen_final)
     return imagenes_log
 
 """
@@ -38,7 +39,7 @@ def crear_imagenes(coordenadas,imagen):
     esta nos estaría sacando los bordes de los k objetos
 """
 def segementar_imagen_por_color():
-    imagen_agrupada,coordenadas = Kmeans.k_means("jit3.jpg",4)
+    imagen_agrupada,coordenadas = Kmeans.k_means("jit_6.jpg",4)
     cv2.imwrite('images/jit_segmentada.jpg',imagen_agrupada)
     ArcadioCv.visualizar_imagen(imagen_agrupada)
     imagenes_log = crear_imagenes(coordenadas,imagen_agrupada)
@@ -78,8 +79,8 @@ def encontrar_puntas(imagen):
         if(bandera == True):
             minimo = j
             break
-    print(imagen[:,j-1]) # 
-    print(minimo)
+    #print(imagen[:,j-1]) # 
+    #print(minimo)
     #encontramos el maximo
     #imagen_invertida = imagen
     for j in range(cols):
@@ -98,22 +99,113 @@ def encontrar_puntas(imagen):
                 blancos.append( [i,j] )
     blancos = np.array(blancos)
     #minimo
-    minimo_filas = np.min(blancos[:,1]) #donde aparece primero un 255 en columnas
+    imagen_nueva = imagen.copy()
+
+   
+
+    minimo_filas = np.min(blancos[:,1]) #donde aparece primero un 255 en filas
     maximo_filas = np.max(blancos[:,1])
 
     minimo_columnas = np.min(blancos[:,0]) #donde aparece primero un 255 en columnas
     maximo_columnas = np.max(blancos[:,0])
+
+
     print("minimo",minimo_filas)
-    imagen[:,minimo_filas] = 75
-    imagen[:,maximo_filas] = 75
 
-    imagen[minimo_columnas,:] = 127
-    imagen[maximo_columnas,:] = 127
+    imagen_nueva[:,minimo_filas] = 75
+    imagen_nueva[:,maximo_filas] = 75
 
+    imagen_nueva[minimo_columnas,:] = 127
+    imagen_nueva[maximo_columnas,:] = 127
+    ArcadioCv.visualizar_imagen(imagen_nueva)
+    return minimo_filas,maximo_filas,minimo_columnas,maximo_columnas
+    
+"""
+Funcion que encuentra la distancia y la linea en jitomates horizontales
+"""
+def encontrar_distancias_derecho(imagen,inicio,fin):
+    rows,cols = imagen.shape
+    
+    #ArcadioCv.visualizar_imagen(imagen,"JITOO")
+    #imagen_interseccion = imagen.copy()
+    fila = imagen[:,inicio]
+    print("XD",inicio)
+    x1=0
+    for j in range(rows): 
+        if(fila[j] == 255):
+            x1=j
+            i=j
+            break
+    fila = imagen[:,fin]
+    
+    x2=0
+    for j in range(rows): 
+        if(fila[j] == 255):
+            x2 = j
+            break
+    
+    distancia = ((x2-x1)**2+(fin-inicio)**2)**0.5
+    #sacamos la recta entre 2 puntos
+    #inicio y fin
+    m1 = (inicio,x1,1)
+    m2 = (fin,x2,1)
+    
+    imagen[x1,inicio] = 127
 
     ArcadioCv.visualizar_imagen(imagen)
+    linea = Analisis2D.linea_entre_2_puntos(m1,m2)
+    x,y = linea
+    #ax+by+c = 0
+    x = np.array(x,np.uint)
+    y = np.array(y,np.uint)
+
+
+    imagen[i,inicio:fin] = 127
+
+    ArcadioCv.visualizar_imagen(imagen)
+    return distancia, (i,inicio,fin)
+
+
+def encontrar_distancia_inclinada(imagen,minimo_filas,maximo_filas,minimo_columnas,maximo_columnas):
+    #tenemos la recta x = minimo_columnas
+    rows,cols = imagen.shape
+    #necesitamos la interseccion de abajo a la izquierda y arriba a la derecha
+    #linea de abajo con la de isquierda
+    p_1 = (maximo_columnas,minimo_filas,1)
+    p_2 = (minimo_columnas,maximo_filas,1)
+    #sacamos la recta de los 2 puntos
+    x1,y1 = Analisis2D.linea_entre_2_puntos(p_1,p_2)
+    x1 = x1[19:len(x1)-12]
+    y1 = y1[19:len(y1)-12]
+    
+    """  x1 = np.array(x1,np.uint)
+    y1 = np.array(y1,np.uint) """
+    #coords = list(zip(x1,y1))
+    """ print(x1)
+    print(y1) """
+    """ imagen[p_1] = 127
+    imagen[p_2] = 127 """
+    puntos = []
+    #quitamos los que se sobresalen de la imagen, hasta que encuentre un 255 
+    """ for i in range(len(x1)): 
+                if(imagen[x1[i],y1[i]]==255):
+                    puntos.append((x1[i],y1[i]))
+   
+    puntos = np.array(puntos) """
+    
+    distancia = ((x1[0] - x1[len(x1)-1])**2 + (y1[0] - y1[len(y1)-1])**2 )**0.5
+
+    print(distancia)
+    x1 = np.array(x1,np.uint)
+    y1 = np.array(y1,np.uint)
+    
+    imagen[x1,y1] = 127
+    
+
 
     
+    ArcadioCv.visualizar_imagen(imagen)
+    pass
 
 
 """
@@ -127,7 +219,7 @@ def separar_objetos():
 
     ArcadioCv.visualizar_imagen(imagen)
     #realizamos el kmeans a las coordenadas
-    imagenes = Kmeans2D.k_means_2d(imagen,4,seed=1) #separamos los 4 jitomates
+    imagenes = Kmeans2D.k_means_2d(imagen,4,seed=0) #separamos los 4 jitomates
     index = 0
     for imagen in imagenes: 
         cv2.imwrite(f'images/jitomates/jitomate_{str(index+1)}.png',imagen)
@@ -139,16 +231,22 @@ def separar_objetos():
 """Aqui se encontrarán las distancias mencionadas en la practica"""
 def distancias():
     #jitomate 2 y jitomate 4 nos dieron los que queremos
-    jitomate2 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_2.png')
-    jitomate4 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_4.png')
+    jitomate2 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_4.png') # el derech
+    jitomate4 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_3.png') # el inclinado 
 
     jitomate2 = binarizar(jitomate2)
     jitomate4 = binarizar(jitomate4)
 
+    
     print(jitomate2)
 
-    encontrar_puntas(jitomate2)
-    encontrar_puntas(jitomate4)
+    """ minimo_filas,maximo_filas,minimo_columnas,maximo_columnas = encontrar_puntas(jitomate2)
+    print("PUNTOS DE UNION EN JITOMATE 1: (",minimo_filas,maximo_filas,")")
+    distancia_jito_4, recta = encontrar_distancias_derecho(jitomate2,minimo_filas,maximo_filas) """
+    
+
+    minimo_filas,maximo_filas,minimo_columnas,maximo_columnas  = encontrar_puntas(jitomate4)
+    encontrar_distancia_inclinada(jitomate4,minimo_filas,maximo_filas,minimo_columnas,maximo_columnas)
 
     
 if __name__ == "__main__":
