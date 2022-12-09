@@ -156,13 +156,14 @@ class Kmeans:
         imagen = ArcadioCv.abrir_imagen_rgb(url_imagen)
         k_points = Kmeans.k_aleatorios(K)
         k_points[0] = (255,0,0)
+        k_points = [(61.62941632969816, 57.3689498835927, 54.675938406241066), (129.711336321447, 128.75006941414463, 128.03948673198207), (142.44682963871608, 36.79926399719618, 30.41102251818102), (179.39889789425845, 184.75357900318133, 186.63224322072412)]
         k_anterior = []
         print(k_points)
         #
         matriz_distancias = Kmeans.agrupamiento(imagen,k_points)
         iteraciones = 0
         while(k_points != k_anterior):
-            if(iteraciones>=15):
+            if(iteraciones>=0):
                 opcion = input("Desea seguir? s/n: ")
                 if opcion == "s":
                     pass

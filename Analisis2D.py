@@ -1,6 +1,14 @@
 import numpy as np
 from ArcadioCv import *
 
+# k = [(55.69138868548982, 51.73827562233507, 49.23192340328793), 
+# (124.60188597303191, 122.55061319156516, 121.47310002596444), 
+# (142.24691703333525, 36.51620118686638, 30.089892072925753), 
+# (178.0056625814884, 183.3840251668077, 185.15679651573248)]
+"""
+    Clase que hace analisis 2D, dado unos puntos, la idea es que sean puntos 
+    de la imagen
+"""
 class Analisis2D: 
     def producto_cruz(p1,p2):
         a1,b1,c1 = p1

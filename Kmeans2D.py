@@ -3,6 +3,11 @@ import random
 import numpy as np 
 import math 
 
+
+"""
+Esta clase hace un KMEANS en 2D, esto es para las coordenadas de la imagen
+y saber donde están agrupados los objetos
+"""
 class Kmeans2D:
 
     def distancia_euclidiana(d1,d2):
@@ -83,6 +88,9 @@ class Kmeans2D:
                     puntos.append( (i,j) )
         return x,y,puntos 
     
+    """
+        Genera el K-means con las coordenadas de una imagen, solo donde hay blancos
+    """
     def k_means_2d(imagen,K=2,seed=0):
         rows,cols = imagen.shape
         random.seed(seed)
@@ -90,7 +98,10 @@ class Kmeans2D:
         #print(puntos)
         k_points = Kmeans2D.k_aleatorios(K,puntos)
         #k_points = [(0,0),(0,cols-1),(rows,cols),(rows,0)]
-        
+        k = [(55.69138868548982, 51.73827562233507, 49.23192340328793), 
+            (124.60188597303191, 122.55061319156516, 121.47310002596444), 
+            (142.24691703333525, 36.51620118686638, 30.089892072925753), 
+            (178.0056625814884, 183.3840251668077, 185.15679651573248)]
         k_anterior = []
         agrupaciones = Kmeans2D.agrupamiento(k_points,x,y)
 
@@ -105,7 +116,9 @@ class Kmeans2D:
         imagenes = Kmeans2D.separar_imagenes(agrupaciones,imagen)
         return imagenes
 
-    
+    """
+        Separa cada objeto de la imagen con respecto a los centroides obtenidos
+    """    
     def separar_imagenes(agrupaciones,imagen):
         rows,cols = imagen.shape
         imagenes = []
@@ -126,6 +139,10 @@ class Kmeans2D:
             ArcadioCv.visualizar_imagen(imagen) """
         return imagenes
 
+    """
+        Esta función ya no se usa, pero segmenta los objetos de manera 
+        vertical
+    """
     def separacion_vertical(imagen):
         rows,cols = imagen.shape
         #recorremos todas las filas y luego vemos si en cualquier punto de la columna hay un blanco,
@@ -156,6 +173,10 @@ class Kmeans2D:
             ArcadioCv.visualizar_imagen(imagen)
         return imagenes
             
+    """
+        Esta función ya no se usa, pero segmenta los objetos de manera 
+        horizontal
+    """
     def separacion_horizontal(imagen):
         rows,cols = imagen.shape
         imagenes = []
@@ -182,7 +203,11 @@ class Kmeans2D:
             ArcadioCv.visualizar_imagen(imagen)
         return imagenes
 
-
+    """"
+        Esta oobtiene los segmentos horizontales, los verticales
+        y a estos les hace un and, e ignora todos los que quedaron 
+        completamente negros
+    """
     def separacion_lineas(imagen):
         rows,cols = imagen.shape
         imagenes = []
