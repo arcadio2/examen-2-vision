@@ -162,7 +162,7 @@ class Kmeans:
         matriz_distancias = Kmeans.agrupamiento(imagen,k_points)
         iteraciones = 0
         while(k_points != k_anterior):
-            if(iteraciones>=20):
+            if(iteraciones>=15):
                 opcion = input("Desea seguir? s/n: ")
                 if opcion == "s":
                     pass

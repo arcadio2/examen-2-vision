@@ -24,13 +24,48 @@ def crear_imagenes(coordenadas,imagen):
                 #guardamos el valor
                 imagen[i,j] = 255
         imagenes.append(imagen)
+
+
+
     imagenes_log = []
+    index = 0
     for imagen in imagenes:
+       
+
         #grises = ArcadioCv.rgb_to_grises(imagen)
+        cv2.imwrite(f'images/Jit_k_{str(index)}.png',imagen)
         imagen_cruces, imagen_delta,imagen_final,imagen_log = ArcadioCv.filtro_log(imagen,7,1)
         ArcadioCv.visualizar_imagen(imagen_final)
         imagenes_log.append(imagen_final)
+        index+=1
     return imagenes_log
+
+def fill():
+     #invertir colores
+    imagen = ArcadioCv.abrir_imagen_grises("images/Jit_k_2.png")
+    rows,cols =imagen.shape
+    print(imagen)
+    ArcadioCv.visualizar_imagen(imagen)
+    original = imagen.copy()
+    cv2.floodFill(imagen,None,(0,0),255)
+    ArcadioCv.visualizar_imagen(imagen)
+    for i in range(rows):
+        for j in range(cols): 
+            imagen[i,j] = 255 if imagen[i,j] == 0 else 0
+
+    final = np.zeros((rows,cols),np.uint8)
+   
+    for i in range(rows):
+        for j in range(cols): 
+            final[i,j] = imagen[i,j] + original[i,j]
+    for i in range(rows):
+        for j in range(cols): 
+            final[i,j] = 255 if final[i,j] == 0 else 0
+
+    ArcadioCv.visualizar_imagen(final)
+    imagen_cruces, imagen_delta,imagen_final,imagen_log = ArcadioCv.filtro_log(final,7,1)
+    ArcadioCv.visualizar_imagen(imagen_final)
+    
 
 """
     Esta función genera la segmentación por color con el algoritmo de KMEANS
@@ -110,7 +145,7 @@ def encontrar_puntas(imagen):
     maximo_columnas = np.max(blancos[:,0])
 
 
-    print("minimo",minimo_filas)
+    #print("minimo",minimo_filas)
 
     imagen_nueva[:,minimo_filas] = 75
     imagen_nueva[:,maximo_filas] = 75
@@ -129,7 +164,7 @@ def encontrar_distancias_derecho(imagen,inicio,fin):
     #ArcadioCv.visualizar_imagen(imagen,"JITOO")
     #imagen_interseccion = imagen.copy()
     fila = imagen[:,inicio]
-    print("XD",inicio)
+    #print("XD",inicio)
     x1=0
     for j in range(rows): 
         if(fila[j] == 255):
@@ -201,7 +236,7 @@ def encontrar_distancia_inclinada(imagen,minimo_filas,maximo_filas,minimo_column
     
     imagen[x1,y1] = 127
     
-
+    return x1,y1,distancia
 
     
     ArcadioCv.visualizar_imagen(imagen)
@@ -232,28 +267,51 @@ def separar_objetos():
 def distancias():
     #jitomate 2 y jitomate 4 nos dieron los que queremos
     jitomate2 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_4.png') # el derech
-    jitomate4 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_3.png') # el inclinado 
+    jitomate4 = ArcadioCv.abrir_imagen_grises('images/jitomates/jitomate_1.png') # el inclinado 
 
     jitomate2 = binarizar(jitomate2)
     jitomate4 = binarizar(jitomate4)
 
     
-    print(jitomate2)
+    #print(jitomate2)
 
-    """ minimo_filas,maximo_filas,minimo_columnas,maximo_columnas = encontrar_puntas(jitomate2)
-    print("PUNTOS DE UNION EN JITOMATE 1: (",minimo_filas,maximo_filas,")")
-    distancia_jito_4, recta = encontrar_distancias_derecho(jitomate2,minimo_filas,maximo_filas) """
+
+    jitomate_bgr = cv2.imread('Jit_6.jpg')
+    color_linea = np.array([255,0,0],np.uint8)
+    print("--------------------------JITOMATE 2-------------------------------")
     
+    minimo_filas,maximo_filas,minimo_columnas,maximo_columnas = encontrar_puntas(jitomate2)
+    #print("PUNTOS DE UNION EN JITOMATE 1: (",minimo_filas,maximo_filas,")")
+    distancia_jito_2, recta = encontrar_distancias_derecho(jitomate2,minimo_filas,maximo_filas)
+    i,inicio,fin = recta
+    print("DISTANCIA DEL JITOMATE 2: ",distancia_jito_2)
+    print("DISTANCIA DEL JITOMATE 2 en imagen de dimension original: ",distancia_jito_2*6)
+    jitomate_bgr[i,inicio:fin] = color_linea
+    
+    print("--------------------------------------------------------------------")
+    print("--------------------------JITOMATE 4-------------------------------")
 
     minimo_filas,maximo_filas,minimo_columnas,maximo_columnas  = encontrar_puntas(jitomate4)
-    encontrar_distancia_inclinada(jitomate4,minimo_filas,maximo_filas,minimo_columnas,maximo_columnas)
+    x1,y1,distancia_jito_4 = encontrar_distancia_inclinada(jitomate4,minimo_filas,maximo_filas,minimo_columnas,maximo_columnas)
+    print("DISTANCIA DEL JITOMATE 4: ",distancia_jito_4)
+    print("DISTANCIA DEL JITOMATE 4 en imagen de dimension original: ",distancia_jito_4*6)
+    print("--------------------------------------------------------------------")
+    jitomate_bgr[x1,y1] = color_linea
+
+    cv2.imshow("IMAGEN FINAL ",jitomate_bgr)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    cv2.imwrite('images/resultados/imagen_escala_6.png',jitomate_bgr)
+
 
     
 if __name__ == "__main__":
     #segmentamos
     #segmentadas = segementar_imagen_por_color()
     #separamos los objttos de la imagen
-    #separar_objetos()
+    #fill()
+    separar_objetos()
     distancias()
 
     
