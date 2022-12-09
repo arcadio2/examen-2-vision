@@ -156,7 +156,7 @@ def encontrar_puntas(imagen):
     cv2.imwrite("images/separaciones/jit_lineas.png",imagen_nueva)
     return minimo_filas,maximo_filas,minimo_columnas,maximo_columnas
     
-"""
+"""-
 Funcion que encuentra la distancia y la linea en jitomates horizontales
 """
 def encontrar_distancias_derecho(imagen,inicio,fin):
@@ -294,6 +294,7 @@ def distancias():
 
     minimo_filas,maximo_filas,minimo_columnas,maximo_columnas  = encontrar_puntas(jitomate4)
     x1,y1,distancia_jito_4 = encontrar_distancia_inclinada(jitomate4,minimo_filas,maximo_filas,minimo_columnas,maximo_columnas)
+    print("PUNTOS JITOMATE 4: ",(y1[0],x1[0]),(y1[len(y1)-1],x1[len(x1)-1]))
     print("DISTANCIA DEL JITOMATE 4: ",distancia_jito_4)
     #print("DISTANCIA DEL JITOMATE 4 en imagen de dimension original: ",distancia_jito_4*6)
     print("--------------------------------------------------------------------")
