@@ -313,10 +313,10 @@ def distancias():
     
 if __name__ == "__main__":
     #segmentamos
-    #segmentadas = segementar_imagen_por_color()
+    segmentadas = segementar_imagen_por_color()
     #separamos los objttos de la imagen
     #fill()
-    #separar_objetos()
+    separar_objetos()
     distancias()
 
     
